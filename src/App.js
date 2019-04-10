@@ -3,6 +3,34 @@ import logo from './logo.svg';
 import PropTypes from 'prop-types';
 import './App.css';
 import './bootstrap.css';
+import {Link} from 'react-router-dom';
+import { fips } from 'crypto';
+
+class Identity extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      firstName: "",
+      lastName: ""
+    };
+    this.onFieldChange = this.onFieldChange.bind(this);
+  };
+
+  onFieldChange(event){
+    this.setState({
+      [event.target.name]:event.target.value
+    });
+  };
+
+  render() {
+    return (
+      <form>
+        <input type="text" name="firstName" value={this.state.firstName} placeholder="First Name" onChange={this.onFieldChange}></input>
+        <input type="text" name="lastName" value={this.state.lastName} placeholder="Last Name" onChange={this.onFieldChange}></input>
+      </form>
+    );
+  }
+};
 
 function Hero() {
   return (
@@ -54,8 +82,14 @@ Turn.propTypes ={
   highlight:PropTypes.string
 };
 
-function Continue() {
-  return (<div></div>);
+function Continue({show, onContinue}) {
+  return (<div className="row continue">
+    { show 
+      ? <div className="col-11">
+          <button className="btn btn-primary btn-lg float-right" onClick={onContinue}>Next</button>
+        </div>
+      : null }
+  </div>);
 }
 
 function Footer() {
@@ -68,13 +102,14 @@ function Footer() {
   </div>);
 }
 
-function App({turnData, highlight, onAnswerSelected}){
+function App({turnData, highlight, onAnswerSelected, onContinue}){
     return (
       <div className="container-fluid">
-        {/* <Identity /> */}
+        <Identity />
         <Hero/>
         <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected}/>
-        <Continue/>
+        <Continue show={highlight === 'correct'} onContinue={onContinue} />
+        <p><Link to="/add">Add an author</Link></p>
         <Footer></Footer>
       </div>
     );
